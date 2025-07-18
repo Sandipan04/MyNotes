@@ -1,3 +1,5 @@
+# Math Talk Ideas
+
 1. Proving Heisenberg uncertainty principle using Fourier analysis 
 2. Data compression using Fourier transform
 3. Bridg-it (Game of Gale) (very close to Hex)
