@@ -10,9 +10,6 @@ Feel free to browse, but please remember these notes are primarily for my person
 - [Math Club and Talks](Math%20Club%20and%20Talks/README.md)
 - [Misc](Misc/README.md)
 
-## Files
-- [Test](Test.md)
-
 ## Subfolder Contents
 ### Math Club and Talks
 [View all notes in Math Club and Talks](Math%20Club%20and%20Talks/README.md)
