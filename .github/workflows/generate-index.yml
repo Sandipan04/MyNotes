@@ -38,4 +38,22 @@ jobs:
           commit_user_name: "GitHub Actions Bot"
           commit_user_email: "actions@github.com"
           commit_author: "GitHub Actions Bot <actions@github.com>"
+      
+      # 👇 ADD THIS NEW STEP HERE 👇
+      - name: Generate Folder Index in README
+        run: |
+          HEADING="## You can browse my notes here:"
+          sed -i "/^$HEADING/,$d" README.md
+          echo -e "\n$HEADING\n" >> README.md
+          find . -maxdepth 1 -mindepth 1 -type d | grep -vE '^\./(\.git|\.github|\.trash)$' | sort | while read -r dir; do
+            echo "* [$(basename "$dir")]($dir)" >> README.md
+          done
+
+      - name: Auto-commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: auto-generate vault index"
+          # The file_pattern should include README.md
+          file_pattern: "**/*.md"
+          
           
