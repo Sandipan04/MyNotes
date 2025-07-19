@@ -1,7 +1,6 @@
-# Index of `Math Club and Talks`
+# Math Club and Talks
 
-[<-- Back to Home](../README.md)
+Go to: [Home](../README.md)
 
-## Notes
+## Files
 - [Math Talk Ideas](Math%20Talk%20Ideas.md)
-

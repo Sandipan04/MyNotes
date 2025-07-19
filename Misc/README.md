@@ -1,7 +1,6 @@
-# Index of `Misc`
+# Misc
 
-[<-- Back to Home](../README.md)
+Go to: [Home](../README.md)
 
-## Notes
+## Files
 - [Dune](Dune.md)
-
