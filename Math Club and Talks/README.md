@@ -1,4 +1,4 @@
-# Index of Math Club and Talks
+# Index of `Math Club and Talks`
 
 [<-- Back to Home](../README.md)
 

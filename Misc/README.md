@@ -1,4 +1,4 @@
-# Index of Misc
+# Index of `Misc`
 
 [<-- Back to Home](../README.md)
 
