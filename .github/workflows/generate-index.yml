@@ -1,10 +1,9 @@
 name: Generate Vault Index
 
-# This action runs on every push to the main/master branch
 on:
   push:
     branches:
-      - main # Or 'master', depending on your repo's default branch
+      - main  # or 'master' if that's your default branch
 
 jobs:
   build-and-commit:
@@ -12,10 +11,10 @@ jobs:
 
     permissions:
       contents: write
-    
+
     steps:
-      # 1. Check out the repository code
-      - name: Checkout Repo
+      # 1. Checkout repository code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       # 2. Set up Python
@@ -24,36 +23,16 @@ jobs:
         with:
           python-version: '3.10'
 
-      # 3. Run the index generation script
-      - name: Generate Index Files
+      # 3. Run index generation script
+      - name: Generate README indexes
         run: python generate_index.py
 
-      # 4. Commit the new/updated README files back to the repo
-      - name: Commit Files
+      # 4. Auto-commit changes to .md files (if any)
+      - name: Commit README updates
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "docs: auto-generate vault index"
-          # The pattern of files to look for changes in
           file_pattern: "**/*.md"
-          commit_user_name: "GitHub Actions Bot"
-          commit_user_email: "actions@github.com"
-          commit_author: "GitHub Actions Bot <actions@github.com>"
-      
-      # 👇 ADD THIS NEW STEP HERE 👇
-      - name: Generate Folder Index in README
-        run: |
-          HEADING="## You can browse my notes here:"
-          sed -i "/^$HEADING/,$d" README.md
-          echo -e "\n$HEADING\n" >> README.md
-          find . -maxdepth 1 -mindepth 1 -type d | grep -vE '^\./(\.git|\.github|\.trash)$' | sort | while read -r dir; do
-            echo "* [$(basename "$dir")]($dir)" >> README.md
-          done
-
-      - name: Auto-commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "docs: auto-generate vault index"
-          # The file_pattern should include README.md
-          file_pattern: "**/*.md"
-          
-          
+          commit_user_name: GitHub Actions Bot
+          commit_user_email: actions@github.com
+          commit_author: GitHub Actions Bot <actions@github.com>
