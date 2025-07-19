@@ -27,18 +27,30 @@ def get_folder_links():
 
 
 def update_main_readme(folder_links):
-    existing_content = ''
+    existing_lines = []
+
     if os.path.exists(MAIN_README_NAME):
         with open(MAIN_README_NAME, 'r', encoding='utf-8') as f:
-            content = f.read()
-            parts = content.split(FOLDER_INDEX_HEADING)
-            existing_content = parts[0].rstrip() + '\n\n' if parts else content
+            lines = f.readlines()
+            found = False
+            for line in lines:
+                if line.strip() == FOLDER_INDEX_HEADING.strip():
+                    found = True
+                    break
+                existing_lines.append(line)
+            if not found:
+                existing_lines.append('\n' + FOLDER_INDEX_HEADING + '\n')
+
+    else:
+        existing_lines = ['# MyNotes\n\n', FOLDER_INDEX_HEADING + '\n']
+
+    # Now add the folder links
+    existing_lines.append('\n')
+    for name, rel in folder_links:
+        existing_lines.append(f'- [{name}]({rel.replace(" ", "%20")}/README.md)\n')
 
     with open(MAIN_README_NAME, 'w', encoding='utf-8') as f:
-        f.write(existing_content)
-        f.write(f'{FOLDER_INDEX_HEADING}\n\n')
-        for name, rel in folder_links:
-            f.write(f'- [{name}]({rel}/README.md)\n')
+        f.writelines(existing_lines)
 
 
 if __name__ == '__main__':
