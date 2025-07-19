@@ -38,8 +38,9 @@ def generate_readme(path, root_path):
     
     # Header
     if path == root_path:
-        content.append("# My Obsidian Vault\n\n")
+        content.append("# MyNotes\n\nThis repository contains my personal notes, thoughts, and ideas.\n\nI use this space for note-taking, organizing information, and keeping track of things that interest me.\n\nFeel free to browse, but please remember these notes are primarily for my personal use and may not always be perfectly organized or complete.")
         content.append("Click folders to explore notes\n\n")
+
     else:
         content.append(f"# {path.name}\n\n")
         content.append(f"Go to: [Home]({rel_to_root}/README.md)\n\n")
