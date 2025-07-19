@@ -1,1 +1,0 @@
-$$\supset \cup \; \cap \in$$
