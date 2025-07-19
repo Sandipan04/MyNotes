@@ -67,13 +67,13 @@ def generate_readme(path, root_path):
         content.append("\n")
     
     # Subfolder listings
-    if folders:
-        content.append("## Subfolder Contents\n")
-        for folder in folders:
-            folder_path = path / folder
-            if any(os.scandir(folder_path)):
-                content.append(f"### {folder}\n")
-                content.append(f"[View all notes in {folder}]({urllib.parse.quote(folder)}/README.md)\n\n")
+    # if folders:
+    #     content.append("## Subfolder Contents\n")
+    #     for folder in folders:
+    #         folder_path = path / folder
+    #         if any(os.scandir(folder_path)):
+    #             content.append(f"### {folder}\n")
+    #             content.append(f"[View all notes in {folder}]({urllib.parse.quote(folder)}/README.md)\n\n")
     
     # Write to file
     with open(path / "README.md", "w", encoding="utf-8") as f:
