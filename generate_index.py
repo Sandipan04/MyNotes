@@ -3,9 +3,10 @@ import re
 
 # --- Configuration ---
 VAULT_ROOT = '.'
+MAIN_README_NAME = 'README.md'
 EXCLUDED_DIRS = {'.git', '.github', '.obsidian', '.trash', '__pycache__'}
 EXCLUDED_FILES = {'generate_index.py', 'LICENSE'}
-MAIN_README_NAME = 'README.md'
+FOLDER_INDEX_HEADING = '## You can browse my notes here:'
 # --- End Configuration ---
 
 
@@ -36,29 +37,20 @@ def generate_folder_index(folder_path, rel_path_from_root):
             f.write('\n')
 
 
-def generate_main_index(all_folders):
-    """Generate the main README.md in the vault root."""
+def update_main_readme(folder_links):
+    """Updates the main README.md file by preserving content above the heading."""
+    existing_content = ''
+    if os.path.exists(MAIN_README_NAME):
+        with open(MAIN_README_NAME, 'r', encoding='utf-8') as f:
+            content = f.read()
+            parts = content.split(FOLDER_INDEX_HEADING)
+            existing_content = parts[0].rstrip() + '\n\n' if parts else content
+
     with open(MAIN_README_NAME, 'w', encoding='utf-8') as f:
-        f.write('# My Obsidian Vault\n\n')
-        f.write('This is an automatically generated index of my notes.\n\n')
-        f.write('## Folders\n')
-
-        for folder in sorted(all_folders):
-            folder_display = prettify_title(os.path.basename(folder))
-            folder_rel = os.path.relpath(folder, VAULT_ROOT)
+        f.write(existing_content)
+        f.write(f'{FOLDER_INDEX_HEADING}\n\n')
+        for folder_display, folder_rel in folder_links:
             f.write(f'- [{folder_display}]({folder_rel.replace(" ", "%20")}/README.md)\n')
-
-        f.write('\n## Root Notes\n')
-        for item in sorted(os.listdir(VAULT_ROOT)):
-            full_path = os.path.join(VAULT_ROOT, item)
-            if (
-                item.endswith('.md')
-                and item not in {MAIN_README_NAME}
-                and item not in EXCLUDED_FILES
-                and os.path.isfile(full_path)
-            ):
-                title = prettify_title(item)
-                f.write(f'- [{title}]({item.replace(" ", "%20")})\n')
 
 
 def should_exclude(path):
@@ -67,20 +59,20 @@ def should_exclude(path):
 
 
 def main():
-    all_folders = []
+    all_folder_links = []
 
     for root, dirs, files in os.walk(VAULT_ROOT):
         if should_exclude(root):
             continue
-
         if root == VAULT_ROOT:
-            continue  # Skip root here; we'll handle it separately
+            continue
 
         rel_path = os.path.relpath(root, VAULT_ROOT)
-        all_folders.append(root)
         generate_folder_index(root, rel_path)
+        folder_display = prettify_title(os.path.basename(root))
+        all_folder_links.append((folder_display, rel_path))
 
-    generate_main_index(all_folders)
+    update_main_readme(sorted(all_folder_links))
     print("✅ All index files generated successfully.")
 
 
