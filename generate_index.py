@@ -22,6 +22,10 @@ def get_folder_links():
 
         rel_path = os.path.relpath(root, VAULT_ROOT)
         name = os.path.basename(rel_path)
+
+        # DEBUG
+        print(f"Found folder: {rel_path}")
+        
         folder_links.append((name, rel_path))
     return sorted(folder_links)
 
