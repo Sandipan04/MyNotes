@@ -1,16 +1,11 @@
 import os
 
-# Config
-VAULT_ROOT = '.'
-MAIN_README_NAME = 'README.md'
-EXCLUDED_DIRS = {'.git', '.github', '.obsidian', '.trash', '__pycache__'}
-FOLDER_INDEX_HEADING = '## You can browse my notes here:'
-
+MAIN_README_NAME = "README.md"
+VAULT_ROOT = "."
 
 def should_exclude(path):
-    parts = path.split(os.sep)
-    return any(part in EXCLUDED_DIRS for part in parts)
-
+    name = os.path.basename(path)
+    return name.startswith(".") or name in {".git", "__pycache__"}
 
 def get_folder_links():
     folder_links = []
@@ -18,46 +13,55 @@ def get_folder_links():
         if should_exclude(root):
             continue
         if root == VAULT_ROOT:
-            continue  # skip root itself
-
+            continue
         rel_path = os.path.relpath(root, VAULT_ROOT)
         name = os.path.basename(rel_path)
-
-        # DEBUG
         print(f"Found folder: {rel_path}")
-        
         folder_links.append((name, rel_path))
     return sorted(folder_links)
 
+def generate_index_markdown(links):
+    lines = ["## 📁 Vault Index\n\n"]
+    for name, path in links:
+        encoded_path = path.replace(" ", "%20")
+        lines.append(f"- [{name}]({encoded_path})\n")
+    lines.append("\n")
+    return lines
 
-def update_main_readme(folder_links):
-    existing_lines = []
+def update_main_readme():
+    links = get_folder_links()
+    new_index = generate_index_markdown(links)
 
-    if os.path.exists(MAIN_README_NAME):
-        with open(MAIN_README_NAME, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-            found = False
-            for line in lines:
-                if line.strip() == FOLDER_INDEX_HEADING.strip():
-                    found = True
-                    break
-                existing_lines.append(line)
-            if not found:
-                existing_lines.append('\n' + FOLDER_INDEX_HEADING + '\n')
+    if not os.path.exists(MAIN_README_NAME):
+        print("No README.md found. Creating new one.")
+        with open(MAIN_README_NAME, "w", encoding="utf-8") as f:
+            f.writelines(new_index)
+        return
 
+    with open(MAIN_README_NAME, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    start = None
+    end = None
+    for i, line in enumerate(lines):
+        if "## 📁 Vault Index" in line:
+            start = i
+            end = i
+            while end < len(lines) and (lines[end].startswith("- ") or lines[end].strip() == ""):
+                end += 1
+            break
+
+    if start is not None:
+        print("Replacing existing index in README.md")
+        lines = lines[:start] + new_index + lines[end:]
     else:
-        existing_lines = ['# MyNotes\n\n', FOLDER_INDEX_HEADING + '\n']
+        print("No existing index found. Appending new one.")
+        lines += ["\n"] + new_index
 
-    # Now add the folder links
-    existing_lines.append('\n')
-    for name, rel in folder_links:
-        existing_lines.append(f'- [{name}]({rel.replace(" ", "%20")}/README.md)\n')
+    with open(MAIN_README_NAME, "w", encoding="utf-8") as f:
+        f.writelines(lines)
 
-    with open(MAIN_README_NAME, 'w', encoding='utf-8') as f:
-        f.writelines(existing_lines)
+    print("✅ Final README.md content preview:")
+    print("".join(lines))
 
-
-if __name__ == '__main__':
-    folder_links = get_folder_links()
-    update_main_readme(folder_links)
-    print(f"✅ Updated README.md with {len(folder_links)} folders.")
+update_main_readme()
