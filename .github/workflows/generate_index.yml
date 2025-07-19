@@ -1,0 +1,41 @@
+name: Generate Index
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: 
+      - 'README.md'
+      - '**/README.md'
+
+permissions:
+  contents: write
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run index generator
+        run: python generate_index.py
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@users.noreply.github.com'
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-generated index"
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
