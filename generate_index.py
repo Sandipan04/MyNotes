@@ -22,8 +22,8 @@ def generate_readme(path, is_root=False):
 
     with open(os.path.join(path, 'README.md'), 'w', encoding='utf-8') as f:
         if is_root:
-            f.write("# My Obsidian Vault\n\n")
-            f.write("Click folders to view notes\n\n## Folders\n")
+            f.write("# MyNotes\n\nThis repository contains my personal notes, thoughts, and ideas.\n\nI use this space for note-taking, organizing information, and keeping track of things that interest me.\n\nFeel free to browse, but please remember these notes are primarily for my personal use and may not always be perfectly organized or complete.\n\n## You can browse my notes here:\n")
+            # f.write("Click folders to view notes\n\n## Folders\n")
             folders.sort()
             for folder in folders:
                 encoded = urllib.parse.quote(folder)
