@@ -1,4 +1,4 @@
-name: Generate Index
+name: Generate Nested Index
 
 on:
   push:
@@ -22,9 +22,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.10'
 
-      - name: Run index generator
+      - name: Run nested index generator
         run: python generate_index.py
 
       - name: Commit changes
@@ -32,7 +32,7 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@users.noreply.github.com'
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-generated index"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-generated nested index"
           
       - name: Push changes
         uses: ad-m/github-push-action@master
